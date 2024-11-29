@@ -1,30 +1,6 @@
 {
-  "name": "ts-template",
-  "description": "ts-template for UbiquityOS plugins.",
-  "ubiquity:listeners": [
-    "issue_comment.created"
-  ],
-  "commands": {
-    "command1": {
-      "ubiquity:example": "/command1 argument",
-      "description": "Command 1 with an argument."
-    }
-  },
-  "configuration": {
-    "default": {
-      "configurableResponse": "Hello, world!"
-    },
-    "type": "object",
-    "properties": {
-      "configurableResponse": {
-        "type": "string"
-      },
-      "customStringsUrl": {
-        "type": "string"
-      }
-    },
-    "required": [
-      "configurableResponse"
-    ]
-  }
+  "name": "Peronal Agent Bridge",
+  "description": "Direct personal commands in comments to respective user's personal agent plugin",
+  "ubiquity:listeners": ["issue_comment.created", "issue_comment.edited"],
+  "configuration": {}
 }

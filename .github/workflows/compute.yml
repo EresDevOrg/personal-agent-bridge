@@ -1,4 +1,4 @@
-name: "the name of the plugin"
+name: "Personal Agent Bridge"
 
 on:
   workflow_dispatch:
@@ -20,7 +20,7 @@ on:
 
 jobs:
   compute:
-    name: "plugin name"
+    name: "Personal Agent Bridge"
     runs-on: ubuntu-latest
     permissions: write-all
     env:
@@ -40,7 +40,7 @@ jobs:
 
       - name: execute directive
         run: npx tsx ./src/main.ts
-        id: plugin-name
+        id: plugin-personal-agent-bridge
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
