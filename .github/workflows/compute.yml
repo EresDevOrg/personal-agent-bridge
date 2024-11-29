@@ -23,9 +23,6 @@ jobs:
     name: "Personal Agent Bridge"
     runs-on: ubuntu-latest
     permissions: write-all
-    env:
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
 
     steps:
       - uses: actions/checkout@v4
@@ -41,6 +38,3 @@ jobs:
       - name: execute directive
         run: npx tsx ./src/main.ts
         id: plugin-personal-agent-bridge
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
