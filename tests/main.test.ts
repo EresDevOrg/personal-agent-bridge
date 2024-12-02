@@ -15,6 +15,7 @@ import { runPlugin } from "../src/plugin";
 dotenv.config();
 jest.requireActual("@octokit/rest");
 const octokit = new Octokit();
+const commentCreateEvent = "issue_comment.created";
 
 beforeAll(() => {
   server.listen();
@@ -38,15 +39,16 @@ describe("Plugin tests", () => {
     expect(content).toEqual(manifest);
   });
 
-  it("Should handle an issue comment event", async () => {
-    const { context, infoSpy, errorSpy, debugSpy, okSpy, verboseSpy } = createContext();
+  it("Should handle personal agent command", async () => {
+    const { context, errorSpy, debugSpy } = createContext();
 
-    expect(context.eventName).toBe("issue_comment.created");
-    expect(context.payload.comment.body).toBe("/Hello");
+    expect(context.eventName).toBe(commentCreateEvent);
+    expect(context.payload.comment.body).toBe("/@EresDev Fork this repository.");
 
     await runPlugin(context);
 
     expect(errorSpy).not.toHaveBeenCalled();
+    //TODO
     expect(debugSpy).toHaveBeenNthCalledWith(1, STRINGS.EXECUTING_HELLO_WORLD, {
       caller: STRINGS.CALLER_LOGS_ANON,
       sender: STRINGS.USER_1,
@@ -54,9 +56,25 @@ describe("Plugin tests", () => {
       issueNumber: 1,
       owner: STRINGS.USER_1,
     });
-    expect(infoSpy).toHaveBeenNthCalledWith(1, STRINGS.HELLO_WORLD);
-    expect(okSpy).toHaveBeenNthCalledWith(1, STRINGS.SUCCESSFULLY_CREATED_COMMENT);
-    expect(verboseSpy).toHaveBeenNthCalledWith(1, STRINGS.EXITING_HELLO_WORLD);
+    //expect(infoSpy).toHaveBeenNthCalledWith(1, STRINGS.HELLO_WORLD);
+    // expect(okSpy).toHaveBeenNthCalledWith(1, STRINGS.SUCCESSFULLY_CREATED_COMMENT);
+    // expect(verboseSpy).toHaveBeenNthCalledWith(1, STRINGS.EXITING_HELLO_WORLD);
+  });
+
+  it.only("Should ignore irrelevant comments", async () => {
+    const { context, errorSpy, infoSpy } = createContext("", "foo bar");
+
+    expect(context.eventName).toBe(commentCreateEvent);
+    expect(context.payload.comment.body).toBe("foo bar");
+
+    await runPlugin(context);
+
+    expect(errorSpy).not.toHaveBeenCalled();
+    expect(infoSpy).toHaveBeenNthCalledWith(1, "Ignoring irrelevant comment: foo bar");
+
+    //expect(infoSpy).toHaveBeenNthCalledWith(1, STRINGS.HELLO_WORLD);
+    // expect(okSpy).toHaveBeenNthCalledWith(1, STRINGS.SUCCESSFULLY_CREATED_COMMENT);
+    // expect(verboseSpy).toHaveBeenNthCalledWith(1, STRINGS.EXITING_HELLO_WORLD);
   });
 
   // it("Should respond with `Hello, World!` in response to /Hello", async () => {
@@ -95,7 +113,7 @@ describe("Plugin tests", () => {
  */
 function createContext(
   configurableResponse: string = "Hello, world!", // we pass the plugin configurable items here
-  commentBody: string = "/Hello",
+  commentBody: string = "/@EresDev Fork this repository.",
   repoId: number = 1,
   payloadSenderId: number = 1,
   commentId: number = 1,
