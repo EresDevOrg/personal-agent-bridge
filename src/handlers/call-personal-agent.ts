@@ -19,14 +19,20 @@ export async function callPersonalAgent(context: Context) {
   const owner = payload.repository.owner.login;
   const body = payload.comment.body;
 
-  if (!body.match(/\B@([a-z0-9](?:-(?=[a-z0-9])|[a-z0-9]){0,38}(?<=[a-z0-9]))\s.*/gi)) {
+  if (!body.match(/^\/\B@([a-z0-9](?:-(?=[a-z0-9])|[a-z0-9]){0,38}(?<=[a-z0-9]))\s.*/i)) {
     logger.info(`Ignoring irrelevant comment: ${body}`);
     return;
   }
 
-  //const username = body.match(/\B@([a-z0-9](?:-(?=[a-z0-9])|[a-z0-9]){0,38}(?<=[a-z0-9]))/gi);
+  const targetUser = body.match(/^\/\B@([a-z0-9](?:-(?=[a-z0-9])|[a-z0-9]){0,38}(?<=[a-z0-9]))/i);
+  if (!targetUser) {
+    logger.error(`Missing target username from comment: ${body}`);
+    return;
+  }
 
-  logger.info(`Comment received: ${body}`);
+  const username = targetUser[0].replace("/@", "");
+
+  logger.info(`Comment received: ${JSON.stringify({ username, comment: body })}`);
 
   logger.debug(`Executing helloWorld:`, { sender, repo, issueNumber, owner });
   // try {

@@ -40,15 +40,21 @@ describe("Plugin tests", () => {
   });
 
   it("Should handle personal agent command", async () => {
-    const { context, errorSpy, debugSpy } = createContext();
+    const { context, errorSpy, debugSpy, infoSpy } = createContext();
 
     expect(context.eventName).toBe(commentCreateEvent);
-    expect(context.payload.comment.body).toBe("/@EresDev Fork this repository.");
 
     await runPlugin(context);
 
     expect(errorSpy).not.toHaveBeenCalled();
     //TODO
+    expect(infoSpy).toHaveBeenNthCalledWith(
+      1,
+      `Comment received: ${JSON.stringify({
+        username: "EresDev",
+        comment: "/@EresDev Fork this repository.",
+      })}`
+    );
     expect(debugSpy).toHaveBeenNthCalledWith(1, STRINGS.EXECUTING_HELLO_WORLD, {
       caller: STRINGS.CALLER_LOGS_ANON,
       sender: STRINGS.USER_1,
@@ -61,7 +67,7 @@ describe("Plugin tests", () => {
     // expect(verboseSpy).toHaveBeenNthCalledWith(1, STRINGS.EXITING_HELLO_WORLD);
   });
 
-  it.only("Should ignore irrelevant comments", async () => {
+  it("Should ignore irrelevant comments", async () => {
     const { context, errorSpy, infoSpy } = createContext("", "foo bar");
 
     expect(context.eventName).toBe(commentCreateEvent);
