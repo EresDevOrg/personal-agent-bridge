@@ -20,9 +20,11 @@ export async function callPersonalAgent(context: Context) {
   const body = payload.comment.body;
 
   if (!body.match(/\B@([a-z0-9](?:-(?=[a-z0-9])|[a-z0-9]){0,38}(?<=[a-z0-9]))\s.*/gi)) {
-    logger.error(`Invalid use of personal agent command.`, { body });
+    logger.info(`Ignoring irrelevant comment: ${body}`);
     return;
   }
+
+  //const username = body.match(/\B@([a-z0-9](?:-(?=[a-z0-9])|[a-z0-9]){0,38}(?<=[a-z0-9]))/gi);
 
   logger.info(`Comment received: ${body}`);
 
