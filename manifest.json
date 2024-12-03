@@ -1,13 +1,20 @@
 {
   "name": "Peronal Agent Bridge",
   "description": "Direct personal commands in comments to respective user's personal agent plugin",
-  "ubiquity:listeners": [
-    "issue_comment.created",
-    "issue_comment.edited"
-  ],
+  "ubiquity:listeners": ["issue_comment.created", "issue_comment.edited"],
   "configuration": {
-    "default": {},
+    "default": {
+      "configurableResponse": "Hello, world!"
+    },
     "type": "object",
-    "properties": {}
+    "properties": {
+      "configurableResponse": {
+        "type": "string"
+      },
+      "customStringsUrl": {
+        "type": "string"
+      }
+    },
+    "required": ["configurableResponse"]
   }
 }
