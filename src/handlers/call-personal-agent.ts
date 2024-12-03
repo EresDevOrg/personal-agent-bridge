@@ -24,6 +24,10 @@ export async function callPersonalAgent(context: Context) {
     return;
   }
 
+  logger.info("logger info");
+  logger.error("logger error");
+  logger.debug("logger debug");
+
   const targetUser = body.match(/^\/\B@([a-z0-9](?:-(?=[a-z0-9])|[a-z0-9]){0,38}(?<=[a-z0-9]))/i);
   if (!targetUser) {
     logger.error(`Missing target username from comment: ${body}`);
@@ -41,9 +45,9 @@ export async function callPersonalAgent(context: Context) {
       repo: "personal-agent",
       workflow_id: "compute.yml",
       ref: "development",
-      inputs: { comment: body },
     });
   } catch (error) {
+    logger.info(`dispatch failed: ${error as string}`);
     logger.error(`Error dispatching workflow: ${error as string}`);
   }
 

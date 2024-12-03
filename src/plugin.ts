@@ -14,6 +14,7 @@ export async function runPlugin(context: Context) {
 
   if (isIssueCommentEvent(context)) {
     return await callPersonalAgent(context);
+    return;
   }
 
   logger.error(`Unsupported event: ${eventName}`);
