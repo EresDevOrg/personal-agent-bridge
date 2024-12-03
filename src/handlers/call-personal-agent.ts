@@ -41,7 +41,6 @@ export async function callPersonalAgent(context: Context) {
       repo: "personal-agent",
       workflow_id: "compute.yml",
       ref: "development",
-      inputs: { comment: body },
     });
   } catch (error) {
     logger.error(`Error dispatching workflow: ${error as string}`);
