@@ -3,7 +3,7 @@ import { returnDataToKernel } from "./helpers/validator";
 import { Env, PluginInputs } from "./types";
 import { Context } from "./types";
 import { isIssueCommentEvent } from "./types/typeguards";
-import { callPersonalAgent } from "./handlers/call-personal-agent";
+//import { callPersonalAgent } from "./handlers/call-personal-agent";
 import { LogLevel, Logs } from "@ubiquity-dao/ubiquibot-logger";
 
 /**
@@ -13,7 +13,8 @@ export async function runPlugin(context: Context) {
   const { logger, eventName } = context;
 
   if (isIssueCommentEvent(context)) {
-    return await callPersonalAgent(context);
+    //return await callPersonalAgent(context);
+    return;
   }
 
   logger.error(`Unsupported event: ${eventName}`);
