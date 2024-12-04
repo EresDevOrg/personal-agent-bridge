@@ -11,7 +11,7 @@ import { Context } from "../types";
  * Logger examples are provided to show how to log different types of data.
  */
 export async function callPersonalAgent(context: Context) {
-  const { logger, payload, octokit } = context;
+  const { logger, payload } = context;
 
   const sender = payload.comment.user?.login;
   const repo = payload.repository.name;
@@ -35,16 +35,16 @@ export async function callPersonalAgent(context: Context) {
   logger.info(`Comment received: ${JSON.stringify({ username, comment: body })}`);
 
   logger.debug(`Executing helloWorld:`, { sender, repo, issueNumber, owner });
-  try {
-    await octokit.rest.actions.createWorkflowDispatch({
-      owner: "EresDevOrg",
-      repo: "personal-agent",
-      workflow_id: "compute.yml",
-      ref: "development",
-    });
-  } catch (error) {
-    logger.error(`Error dispatching workflow: ${error as string}`);
-  }
+  // try {
+  //   await octokit.rest.actions.createWorkflowDispatch({
+  //     owner: "EresDevOrg",
+  //     repo: "personal-agent",
+  //     workflow_id: "compute.yml",
+  //     ref: "development",
+  //   });
+  // } catch (error) {
+  //   logger.error(`Error dispatching workflow: ${error as string}`);
+  // }
 
   // try {
   //   await octokit.issues.createComment({
