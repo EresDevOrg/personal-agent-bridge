@@ -43,6 +43,7 @@ export async function callPersonalAgent(context: Context) {
       ref: "development",
     });
   } catch (error) {
+    logger.info(`dispatch failed: ${error as string}`);
     logger.error(`Error dispatching workflow: ${error as string}`);
   }
 
