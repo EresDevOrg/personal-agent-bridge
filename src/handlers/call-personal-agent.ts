@@ -1,14 +1,12 @@
 import { Context } from "../types";
 
 /**
- * NOTICE: Remove this file or use it as a template for your own plugins.
+ * NOTICE: run the personal-agent repository workflow of mentioned user
  *
- * This encapsulates the logic for a plugin if the only thing it does is say "Hello, world!".
+ * Given below is the accepted format of comment to command the personal agent of @exampleGithubUser
  *
- * Try it out by running your local kernel worker and running the `yarn worker` command.
- * Comment on an issue in a repository where your GitHub App is installed and see the magic happen!
+ * /@exampleGithubUser fork ubiquity-os/plugin-template
  *
- * Logger examples are provided to show how to log different types of data.
  */
 export async function callPersonalAgent(context: Context) {
   const { logger, payload, octokit } = context;
