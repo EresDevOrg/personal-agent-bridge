@@ -36,10 +36,15 @@ export async function callPersonalAgent(context: Context) {
     ref: "development",
   };
 
-  logger.debug(`Calling personal agent:`, paWorkflowParams);
+  logger.info(`Calling personal agent:`, paWorkflowParams);
 
   try {
-    await octokit.rest.actions.createWorkflowDispatch(paWorkflowParams);
+    await octokit.rest.actions.createWorkflowDispatch({
+      owner: personalAgentOwner,
+      repo: "personal-agent",
+      workflow_id: "compute.yml",
+      ref: "development",
+    });
   } catch (error) {
     logger.error(`Error dispatching workflow:`, { err: error, error: new Error() });
     throw error;
