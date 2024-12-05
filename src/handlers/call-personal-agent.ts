@@ -24,6 +24,10 @@ export async function callPersonalAgent(context: Context) {
     return;
   }
 
+  logger.info("logger info");
+  logger.error("logger error");
+  logger.debug("logger debug");
+
   const targetUser = body.match(/^\/\B@([a-z0-9](?:-(?=[a-z0-9])|[a-z0-9]){0,38}(?<=[a-z0-9]))/i);
   if (!targetUser) {
     logger.error(`Missing target username from comment: ${body}`);
