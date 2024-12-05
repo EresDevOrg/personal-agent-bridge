@@ -25,12 +25,12 @@ export async function callPersonalAgent(context: Context) {
     return;
   }
 
-  const paOwner = targetUser[0].replace("/@", "");
+  const personalAgentOwner = targetUser[0].replace("/@", "");
 
   logger.info(`Comment received: ${JSON.stringify({ username: owner, comment: body })}`);
 
   const paWorkflowParams = {
-    owner: paOwner,
+    owner: personalAgentOwner,
     repo: "personal-agent",
     workflow_id: "compute.yml",
     ref: "development",
@@ -45,6 +45,6 @@ export async function callPersonalAgent(context: Context) {
     throw error;
   }
 
-  logger.ok(`Successfully sent the command to personal agent of @${paOwner}!`);
+  logger.ok(`Successfully sent the command to personal agent of @${personalAgentOwner}!`);
   logger.verbose(`Exiting callPersonalAgent`);
 }
