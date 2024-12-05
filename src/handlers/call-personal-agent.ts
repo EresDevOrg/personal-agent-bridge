@@ -11,7 +11,7 @@ import { Context } from "../types";
 export async function callPersonalAgent(context: Context) {
   const { logger, payload, octokit } = context;
 
-  const owner = payload.repository.owner.login;
+  //const owner = payload.repository.owner.login;
   const body = payload.comment.body;
 
   if (!body.match(/^\/\B@([a-z0-9](?:-(?=[a-z0-9])|[a-z0-9]){0,38}(?<=[a-z0-9]))\s.*/i)) {
@@ -25,12 +25,12 @@ export async function callPersonalAgent(context: Context) {
     return;
   }
 
-  const paOwner = targetUser[0].replace("/@", "");
+  const personalAgentOwner = targetUser[0].replace("/@", "");
 
-  logger.info(`Comment received: ${JSON.stringify({ username: owner, comment: body })}`);
+  logger.info(`Comment received: ${JSON.stringify({ username: personalAgentOwner, comment: body })}`);
 
   const paWorkflowParams = {
-    owner: paOwner,
+    owner: personalAgentOwner,
     repo: "personal-agent",
     workflow_id: "compute.yml",
     ref: "development",
@@ -45,6 +45,6 @@ export async function callPersonalAgent(context: Context) {
     throw error;
   }
 
-  logger.ok(`Successfully sent the command to personal agent of @${paOwner}!`);
+  logger.ok(`Successfully sent the command to personal agent of @${personalAgentOwner}!`);
   logger.verbose(`Exiting callPersonalAgent`);
 }
