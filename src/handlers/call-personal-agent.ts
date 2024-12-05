@@ -13,9 +13,6 @@ import { Context } from "../types";
 export async function callPersonalAgent(context: Context) {
   const { logger, payload, octokit } = context;
 
-  const sender = payload.comment.user?.login;
-  const repo = payload.repository.name;
-  const issueNumber = payload.issue.number;
   const owner = payload.repository.owner.login;
   const body = payload.comment.body;
 
@@ -24,64 +21,32 @@ export async function callPersonalAgent(context: Context) {
     return;
   }
 
-  logger.info("logger info");
-  logger.error("logger error");
-  logger.debug("logger debug");
-
   const targetUser = body.match(/^\/\B@([a-z0-9](?:-(?=[a-z0-9])|[a-z0-9]){0,38}(?<=[a-z0-9]))/i);
   if (!targetUser) {
     logger.error(`Missing target username from comment: ${body}`);
     return;
   }
 
-  const username = targetUser[0].replace("/@", "");
+  const paOwner = targetUser[0].replace("/@", "");
 
-  logger.info(`Comment received: ${JSON.stringify({ username, comment: body })}`);
+  logger.info(`Comment received: ${JSON.stringify({ username: owner, comment: body })}`);
 
-  logger.debug(`Executing helloWorld:`, { sender, repo, issueNumber, owner });
+  const paWorkflowParams = {
+    owner: paOwner,
+    repo: "personal-agent",
+    workflow_id: "compute.yml",
+    ref: "development",
+  };
+
+  logger.debug(`Calling personal agent:`, paWorkflowParams);
+
   try {
-    await octokit.rest.actions.createWorkflowDispatch({
-      owner: "EresDevOrg",
-      repo: "personal-agent",
-      workflow_id: "compute.yml",
-      ref: "development",
-    });
+    await octokit.rest.actions.createWorkflowDispatch(paWorkflowParams);
   } catch (error) {
-    logger.info(`dispatch failed: ${error as string}`);
-    logger.error(`Error dispatching workflow: ${error as string}`);
+    logger.error(`Error dispatching workflow:`, { err: error, error: new Error() });
+    throw error;
   }
 
-  // try {
-  //   await octokit.issues.createComment({
-  //     owner: payload.repository.owner.login,
-  //     repo: payload.repository.name,
-  //     issue_number: payload.issue.number,
-  //     body: configurableResponse,
-  //   });
-  //   if (customStringsUrl) {
-  //     const response = await fetch(customStringsUrl).then((value) => value.json());
-  //     await octokit.issues.createComment({
-  //       owner: payload.repository.owner.login,
-  //       repo: payload.repository.name,
-  //       issue_number: payload.issue.number,
-  //       body: response.greeting,
-  //     });
-  //   }
-  // } catch (error) {
-  //   /**
-  //    * logger.fatal should not be used in 9/10 cases. Use logger.error instead.
-  //    *
-  //    * Below are examples of passing error objects to the logger, only one is needed.
-  //    */
-  //   if (error instanceof Error) {
-  //     logger.error(`Error creating comment:`, { error: error, stack: error.stack });
-  //     throw error;
-  //   } else {
-  //     logger.error(`Error creating comment:`, { err: error, error: new Error() });
-  //     throw error;
-  //   }
-  // }
-
-  // logger.ok(`Successfully created comment!`);
+  logger.ok(`Successfully sent the command to personal agent!`);
   logger.verbose(`Exiting callPersonalAgent`);
 }
