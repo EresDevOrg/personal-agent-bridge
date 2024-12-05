@@ -47,6 +47,6 @@ export async function callPersonalAgent(context: Context) {
     throw error;
   }
 
-  logger.ok(`Successfully sent the command to personal agent!`);
+  logger.ok(`Successfully sent the command to personal agent of @${paOwner}!`);
   logger.verbose(`Exiting callPersonalAgent`);
 }
