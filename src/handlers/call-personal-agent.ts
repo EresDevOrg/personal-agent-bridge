@@ -42,13 +42,6 @@ export async function callPersonalAgent(context: Context) {
       ref: "development",
     });
   } catch (error) {
-    // if (error?.status == 404) {
-    //   logger.error(`${personalAgentOwner} does not have the fork of \`ubiquity-os-marketplace/personal-agent\` plugin to act on this.`);
-    // } else if (error?.status == 403) {
-    //   logger.error(
-    //     `${personalAgentOwner} did not enable action or did not install UbiquityOS on its fork of \`ubiquity-os-marketplace/personal-agent\` plugin to act on this.`
-    //   );
-    // }
     logger.error(`Error dispatching workflow:`, { err: error, error: new Error() });
     throw error;
   }
