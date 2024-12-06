@@ -1,3 +1,4 @@
+import { Octokit } from "@octokit/rest";
 import { Context } from "../types";
 
 /**
@@ -9,7 +10,7 @@ import { Context } from "../types";
  *
  */
 export async function callPersonalAgent(context: Context) {
-  const { logger, payload, octokit } = context;
+  const { logger, payload } = context;
 
   const owner = payload.repository.owner.login;
   const body = payload.comment.body;
@@ -27,16 +28,27 @@ export async function callPersonalAgent(context: Context) {
 
   const personalAgentOwner = targetUser[0].replace("/@", "");
 
-  logger.info(`Comment received:`, { commenter: owner, personalAgentOwner, comment: body });
+  logger.info(`Comment received:`, { owner, personalAgentOwner, comment: body });
 
   try {
-    await octokit.rest.actions.createWorkflowDispatch({
+    const paOctokit = new Octokit({
+      auth: process.env.PA_PAT_TOKEN,
+    });
+
+    await paOctokit.rest.actions.createWorkflowDispatch({
       owner: personalAgentOwner,
       repo: "personal-agent",
       workflow_id: "compute.yml",
       ref: "development",
     });
   } catch (error) {
+    // if (error?.status == 404) {
+    //   logger.error(`${personalAgentOwner} does not have the fork of \`ubiquity-os-marketplace/personal-agent\` plugin to act on this.`);
+    // } else if (error?.status == 403) {
+    //   logger.error(
+    //     `${personalAgentOwner} did not enable action or did not install UbiquityOS on its fork of \`ubiquity-os-marketplace/personal-agent\` plugin to act on this.`
+    //   );
+    // }
     logger.error(`Error dispatching workflow:`, { err: error, error: new Error() });
     throw error;
   }
