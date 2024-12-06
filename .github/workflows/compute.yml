@@ -25,6 +25,7 @@ jobs:
     permissions: write-all
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PA_PAT_TOKEN: ${{ secrets.PA_PAT_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
