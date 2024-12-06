@@ -1,6 +1,5 @@
-import { Octokit } from "@octokit/core";
-import { Context, PluginInputs } from "../types";
-import { restEndpointMethods } from "@octokit/plugin-rest-endpoint-methods";
+import { Octokit } from "@octokit/rest";
+import { Context } from "../types";
 
 /**
  * NOTICE: run the personal-agent repository workflow of mentioned user
@@ -10,7 +9,7 @@ import { restEndpointMethods } from "@octokit/plugin-rest-endpoint-methods";
  * /@exampleGithubUser fork ubiquity-os/plugin-template
  *
  */
-export async function callPersonalAgent(context: Context, inputs: PluginInputs) {
+export async function callPersonalAgent(context: Context) {
   const { logger, payload } = context;
 
   const owner = payload.repository.owner.login;
@@ -32,13 +31,11 @@ export async function callPersonalAgent(context: Context, inputs: PluginInputs) 
   logger.info(`Comment received:`, { owner, personalAgentOwner, comment: body });
 
   try {
-    // new Octokit({
-    //   auth: process.env.PA_PAT_TOKEN,
-    // });
-    const customOctokit = Octokit.plugin(restEndpointMethods);
-    const octokit = new customOctokit({ auth: inputs.authToken });
+    const paOctokit = new Octokit({
+      auth: process.env.PA_PAT_TOKEN,
+    });
 
-    await octokit.rest.actions.createWorkflowDispatch({
+    await paOctokit.rest.actions.createWorkflowDispatch({
       owner: personalAgentOwner,
       repo: "personal-agent",
       workflow_id: "compute.yml",
