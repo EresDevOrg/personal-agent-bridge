@@ -9,12 +9,11 @@ import { LogLevel, Logs } from "@ubiquity-dao/ubiquibot-logger";
 /**
  * The main plugin function. Split for easier testing.
  */
-export async function runPlugin(context: Context) {
+export async function runPlugin(context: Context, inputs: PluginInputs) {
   const { logger, eventName } = context;
 
   if (isIssueCommentEvent(context)) {
-    return await callPersonalAgent(context);
-    return;
+    return await callPersonalAgent(context, inputs);
   }
 
   logger.error(`Unsupported event: ${eventName}`);
@@ -46,6 +45,6 @@ export async function plugin(inputs: PluginInputs, env: Env) {
    * context.adapters = createAdapters(supabase, context);
    */
 
-  await runPlugin(context);
+  await runPlugin(context, inputs);
   return returnDataToKernel(process.env.GITHUB_TOKEN, inputs.stateId, {});
 }
