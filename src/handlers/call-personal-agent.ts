@@ -1,7 +1,7 @@
-import { Octokit } from "@octokit/rest";
+// import { Octokit } from "@octokit/rest";
 import { Context } from "../types";
 import { getPersonalAgentConfig } from "../helpers/config";
-import { decryptKeys } from "../helpers/keys";
+// import { decryptKeys } from "../helpers/keys";
 
 /**
  * NOTICE: run the personal-agent repository workflow of mentioned user
@@ -46,13 +46,13 @@ export async function callPersonalAgent(context: Context) {
     throw new Error(`Missing PA_BRIDGE_X25519_PRIVATE_KEY in bridge repository secrets.`);
   }
 
-  const patDecrypted = await decryptKeys(personalAgentConfig.config.GITHUB_PAT_ENCRYPTED, process.env.PA_BRIDGE_X25519_PRIVATE_KEY, logger);
+  //const patDecrypted = await decryptKeys(personalAgentConfig.config.GITHUB_PAT_ENCRYPTED, process.env.PA_BRIDGE_X25519_PRIVATE_KEY, logger);
   try {
-    const paOctokit = new Octokit({
-      auth: patDecrypted.decryptedText,
-    });
+    // const paOctokit = new Octokit({
+    //   auth: patDecrypted.decryptedText,
+    // });
 
-    await paOctokit.rest.actions.createWorkflowDispatch({
+    await context.octokit.rest.actions.createWorkflowDispatch({
       owner: personalAgentOwner,
       repo: "personal-agent",
       workflow_id: "compute.yml",
