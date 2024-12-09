@@ -29,25 +29,27 @@ export async function callPersonalAgent(context: Context) {
     return;
   }
 
-  try {
-    const errComment = ["```diff", `! There was a problem calling the personal agent of ${personalAgentOwner}`, "```"].join("\n");
+  const errComment = ["```diff", `! There was a problem calling the personal agent of ${personalAgentOwner}`, "```"].join("\n");
 
-    logger.info("commenting", {
+  console.log(
+    `commenting 
+    ${JSON.stringify({
       body: errComment,
       repo,
       owner,
       issue_number: payload.issue.number,
-    });
+    })}`
+  );
 
-    await context.octokit.rest.issues.createComment({
-      body: errComment,
-      repo,
-      owner,
-      issue_number: payload.issue.number,
-    });
-  } catch (err) {
-    logger.error(`Error commenting:`, { err, error: new Error() });
-  }
+  await context.octokit.rest.issues.createComment({
+    body: errComment,
+    repo,
+    owner,
+    issue_number: payload.issue.number,
+  });
+  // } catch (err) {
+  //   logger.error(`Error commenting:`, { err, error: new Error() });
+  // }
 
   const personalAgentOwner = targetUser[0].replace("/@", "");
   logger.info(`Comment received:`, { owner, personalAgentOwner, comment: body });
