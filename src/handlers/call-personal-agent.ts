@@ -29,6 +29,26 @@ export async function callPersonalAgent(context: Context) {
     return;
   }
 
+  try {
+    const errComment = ["```diff", `! There was a problem calling the personal agent of ${personalAgentOwner}`, "```"].join("\n");
+
+    logger.info("commenting", {
+      body: errComment,
+      repo,
+      owner,
+      issue_number: payload.issue.number,
+    });
+
+    await context.octokit.rest.issues.createComment({
+      body: errComment,
+      repo,
+      owner,
+      issue_number: payload.issue.number,
+    });
+  } catch (err) {
+    logger.error(`Error commenting:`, { err, error: new Error() });
+  }
+
   const personalAgentOwner = targetUser[0].replace("/@", "");
   logger.info(`Comment received:`, { owner, personalAgentOwner, comment: body });
 
@@ -55,25 +75,6 @@ export async function callPersonalAgent(context: Context) {
       ref: "development",
     });
   } catch (error) {
-    try {
-      const errComment = ["```diff", `! There was a problem calling the personal agent of ${personalAgentOwner}`, "```"].join("\n");
-
-      logger.info("commenting", {
-        body: errComment,
-        repo,
-        owner,
-        issue_number: payload.issue.number,
-      });
-
-      await context.octokit.rest.issues.createComment({
-        body: errComment,
-        repo,
-        owner,
-        issue_number: payload.issue.number,
-      });
-    } catch (err) {
-      logger.error(`Error commenting:`, { err, error: new Error() });
-    }
     logger.error(`Error dispatching workflow:`, { err: error, error: new Error() });
 
     throw error;
