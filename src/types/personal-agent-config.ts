@@ -8,6 +8,6 @@ export const personalAgentConfigSchema = T.Object(
   { default: {} }
 );
 
-export const pluginSettingsValidator = new StandardValidator(personalAgentConfigSchema);
+export const configSchemaValidator = new StandardValidator(personalAgentConfigSchema);
 
 export type PluginSettings = StaticDecode<typeof personalAgentConfigSchema>;
