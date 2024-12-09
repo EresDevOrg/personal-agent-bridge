@@ -32,7 +32,7 @@ export async function callPersonalAgent(context: Context) {
   try {
     const errComment = ["```diff", `! There was a problem calling the personal agent of ${personalAgentOwner}`, "```"].join("\n");
 
-    logger.info("commenting", {
+    logger.error("commenting", {
       body: errComment,
       repo,
       owner,
