@@ -80,7 +80,7 @@ export async function callPersonalAgent(context: Context) {
       issue_number: payload.issue.number,
     });
 
-    throw error;
+    //throw error;
   }
 
   logger.ok(`Successfully sent the command to personal agent of @${personalAgentOwner}!`);
