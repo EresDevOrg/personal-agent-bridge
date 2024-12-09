@@ -55,8 +55,6 @@ export async function callPersonalAgent(context: Context) {
       ref: "development",
     });
   } catch (error) {
-    logger.error(`Error dispatching workflow:`, { err: error, error: new Error() });
-
     try {
       const errComment = ["```diff", `! There was a problem calling the personal agent of ${personalAgentOwner}`, "```"].join("\n");
 
@@ -76,6 +74,7 @@ export async function callPersonalAgent(context: Context) {
     } catch (err) {
       logger.error(`Error commenting:`, { err, error: new Error() });
     }
+    logger.error(`Error dispatching workflow:`, { err: error, error: new Error() });
 
     throw error;
   }
