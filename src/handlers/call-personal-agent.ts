@@ -1,7 +1,7 @@
-// import { Octokit } from "@octokit/rest";
+import { Octokit } from "@octokit/rest";
 import { Context } from "../types";
 import { getPersonalAgentConfig } from "../helpers/config";
-// import { decryptKeys } from "../helpers/keys";
+import { decryptKeys } from "../helpers/keys";
 
 /**
  * NOTICE: run the personal-agent repository workflow of mentioned user
@@ -32,9 +32,6 @@ export async function callPersonalAgent(context: Context) {
   const personalAgentOwner = targetUser[0].replace("/@", "");
   logger.info(`Comment received:`, { owner, personalAgentOwner, comment: body });
 
-  // } catch (err) {
-  //   logger.error(`Error commenting:`, { err, error: new Error() });
-  // }
   try {
     const personalAgentConfig = await getPersonalAgentConfig(context, personalAgentOwner);
 
@@ -46,13 +43,13 @@ export async function callPersonalAgent(context: Context) {
       throw new Error(`Missing PA_BRIDGE_X25519_PRIVATE_KEY in bridge repository secrets.`);
     }
 
-    //const patDecrypted = await decryptKeys(personalAgentConfig.config.GITHUB_PAT_ENCRYPTED, process.env.PA_BRIDGE_X25519_PRIVATE_KEY, logger);
+    const patDecrypted = await decryptKeys(personalAgentConfig.config.GITHUB_PAT_ENCRYPTED, process.env.PA_BRIDGE_X25519_PRIVATE_KEY, logger);
 
-    // const paOctokit = new Octokit({
-    //   auth: patDecrypted.decryptedText,
-    // });
+    const paOctokit = new Octokit({
+      auth: patDecrypted.decryptedText,
+    });
 
-    await context.octokit.rest.actions.createWorkflowDispatch({
+    await paOctokit.rest.actions.createWorkflowDispatch({
       owner: personalAgentOwner,
       repo: "personal-agent",
       workflow_id: "compute.yml",
@@ -62,17 +59,6 @@ export async function callPersonalAgent(context: Context) {
     logger.error(`Error dispatching workflow:`, { err: error, error: new Error() });
 
     const errComment = ["```diff", `! There was a problem calling the personal agent of ${personalAgentOwner}`, "```"].join("\n");
-
-    console.log(
-      `commenting 
-      ${JSON.stringify({
-        body: errComment,
-        repo,
-        owner,
-        issue_number: payload.issue.number,
-      })}`
-    );
-
     await context.octokit.rest.issues.createComment({
       body: errComment,
       repo,
@@ -80,7 +66,7 @@ export async function callPersonalAgent(context: Context) {
       issue_number: payload.issue.number,
     });
 
-    //throw error;
+    throw error;
   }
 
   logger.ok(`Successfully sent the command to personal agent of @${personalAgentOwner}!`);
