@@ -35,19 +35,19 @@ export async function callPersonalAgent(context: Context) {
   // } catch (err) {
   //   logger.error(`Error commenting:`, { err, error: new Error() });
   // }
-
-  const personalAgentConfig = await getPersonalAgentConfig(context, personalAgentOwner);
-
-  if (!personalAgentConfig.config) {
-    throw new Error(`No personal agent config found on ${personalAgentOwner}/personal-agent`);
-  }
-
-  if (!process.env.PA_BRIDGE_X25519_PRIVATE_KEY) {
-    throw new Error(`Missing PA_BRIDGE_X25519_PRIVATE_KEY in bridge repository secrets.`);
-  }
-
-  //const patDecrypted = await decryptKeys(personalAgentConfig.config.GITHUB_PAT_ENCRYPTED, process.env.PA_BRIDGE_X25519_PRIVATE_KEY, logger);
   try {
+    const personalAgentConfig = await getPersonalAgentConfig(context, personalAgentOwner);
+
+    if (!personalAgentConfig.config) {
+      throw new Error(`No personal agent config found on ${personalAgentOwner}/personal-agent`);
+    }
+
+    if (!process.env.PA_BRIDGE_X25519_PRIVATE_KEY) {
+      throw new Error(`Missing PA_BRIDGE_X25519_PRIVATE_KEY in bridge repository secrets.`);
+    }
+
+    //const patDecrypted = await decryptKeys(personalAgentConfig.config.GITHUB_PAT_ENCRYPTED, process.env.PA_BRIDGE_X25519_PRIVATE_KEY, logger);
+
     // const paOctokit = new Octokit({
     //   auth: patDecrypted.decryptedText,
     // });
