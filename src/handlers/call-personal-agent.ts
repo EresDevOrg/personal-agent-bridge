@@ -38,7 +38,7 @@ export async function callPersonalAgent(context: Context) {
   }
 
   if (!process.env.PA_BRIDGE_X25519_PRIVATE_KEY) {
-    throw new Error(`Missing PA_BRIDGE_X25519_PRIVATE_KEY in bridge repository env.`);
+    throw new Error(`Missing PA_BRIDGE_X25519_PRIVATE_KEY in bridge repository secrets.`);
   }
 
   const patDecrypted = await decryptKeys(personalAgentConfig.config.GITHUB_PAT_ENCRYPTED, process.env.PA_BRIDGE_X25519_PRIVATE_KEY, logger);
