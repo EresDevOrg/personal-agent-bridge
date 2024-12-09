@@ -34,13 +34,11 @@ export async function callPersonalAgent(context: Context) {
   const personalAgentConfig = await getPersonalAgentConfig(context, personalAgentOwner);
 
   if (!personalAgentConfig.config) {
-    console.log(`No personal agent config found on ${personalAgentOwner}/personal-agent`);
-    return;
+    throw new Error(`No personal agent config found on ${personalAgentOwner}/personal-agent`);
   }
 
   if (!process.env.PA_BRIDGE_X25519_PRIVATE_KEY) {
-    console.log(`Missing PA_BRIDGE_X25519_PRIVATE_KEY in bridge repository env.`);
-    return;
+    throw new Error(`Missing PA_BRIDGE_X25519_PRIVATE_KEY in bridge repository env.`);
   }
 
   const patDecrypted = await decryptKeys(personalAgentConfig.config.GITHUB_PAT_ENCRYPTED, process.env.PA_BRIDGE_X25519_PRIVATE_KEY, logger);
