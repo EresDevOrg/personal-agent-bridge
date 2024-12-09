@@ -58,7 +58,7 @@ export async function callPersonalAgent(context: Context) {
   } catch (error) {
     logger.error(`Error dispatching workflow:`, { err: error, error: new Error() });
 
-    const errComment = ["```diff", `! There was a problem calling the personal agent of ${personalAgentOwner}`, "```"].join("\n");
+    const errComment = ["```diff", `! There was a problem in communicating with ${personalAgentOwner}/personal-agent`, "```"].join("\n");
     await context.octokit.rest.issues.createComment({
       body: errComment,
       repo,
