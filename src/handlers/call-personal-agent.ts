@@ -29,6 +29,9 @@ export async function callPersonalAgent(context: Context) {
     return;
   }
 
+  const personalAgentOwner = targetUser[0].replace("/@", "");
+  logger.info(`Comment received:`, { owner, personalAgentOwner, comment: body });
+
   const errComment = ["```diff", `! There was a problem calling the personal agent of ${personalAgentOwner}`, "```"].join("\n");
 
   console.log(
@@ -50,9 +53,6 @@ export async function callPersonalAgent(context: Context) {
   // } catch (err) {
   //   logger.error(`Error commenting:`, { err, error: new Error() });
   // }
-
-  const personalAgentOwner = targetUser[0].replace("/@", "");
-  logger.info(`Comment received:`, { owner, personalAgentOwner, comment: body });
 
   const personalAgentConfig = await getPersonalAgentConfig(context, personalAgentOwner);
 
