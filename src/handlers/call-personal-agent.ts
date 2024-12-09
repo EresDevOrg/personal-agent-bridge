@@ -44,7 +44,7 @@ export async function callPersonalAgent(context: Context) {
   const patDecrypted = await decryptKeys(personalAgentConfig.config.GITHUB_PAT_ENCRYPTED, process.env.PA_BRIDGE_X25519_PRIVATE_KEY, logger);
   try {
     const paOctokit = new Octokit({
-      auth: patDecrypted.privateKey,
+      auth: patDecrypted.decryptedText,
     });
 
     await paOctokit.rest.actions.createWorkflowDispatch({
