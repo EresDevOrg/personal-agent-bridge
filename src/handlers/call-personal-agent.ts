@@ -16,6 +16,7 @@ export async function callPersonalAgent(context: Context) {
 
   const owner = payload.repository.owner.login;
   const body = payload.comment.body;
+  const repo = payload.repository.name;
 
   if (!body.match(/^\/\B@([a-z0-9](?:-(?=[a-z0-9])|[a-z0-9]){0,38}(?<=[a-z0-9]))\s.*/i)) {
     logger.info(`Ignoring irrelevant comment: ${body}`);
@@ -55,6 +56,15 @@ export async function callPersonalAgent(context: Context) {
     });
   } catch (error) {
     logger.error(`Error dispatching workflow:`, { err: error, error: new Error() });
+
+    const errComment = ["```diff", `! There was a problem calling the personal agent of ${personalAgentOwner}`, "```"].join("\n");
+    await context.octokit.rest.issues.createComment({
+      body: errComment,
+      repo,
+      owner,
+      issue_number: payload.issue.number,
+    });
+
     throw error;
   }
 
