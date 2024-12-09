@@ -1,5 +1,7 @@
 import { Octokit } from "@octokit/rest";
 import { Context } from "../types";
+import { getPersonalAgentConfig } from "../helpers/config";
+import { decryptKeys } from "../helpers/keys";
 
 /**
  * NOTICE: run the personal-agent repository workflow of mentioned user
@@ -27,12 +29,24 @@ export async function callPersonalAgent(context: Context) {
   }
 
   const personalAgentOwner = targetUser[0].replace("/@", "");
-
   logger.info(`Comment received:`, { owner, personalAgentOwner, comment: body });
 
+  const personalAgentConfig = await getPersonalAgentConfig(context, personalAgentOwner);
+
+  if (!personalAgentConfig.config) {
+    console.log(`No personal agent config found on ${personalAgentOwner}/personal-agent`);
+    return;
+  }
+
+  if (!process.env.PA_BRIDGE_X25519_PRIVATE_KEY) {
+    console.log(`Missing PA_BRIDGE_X25519_PRIVATE_KEY in bridge repository env.`);
+    return;
+  }
+
+  const patDecrypted = await decryptKeys(personalAgentConfig.config.GITHUB_PAT_ENCRYPTED, process.env.PA_BRIDGE_X25519_PRIVATE_KEY, logger);
   try {
     const paOctokit = new Octokit({
-      auth: process.env.PA_PAT_TOKEN,
+      auth: patDecrypted.privateKey,
     });
 
     await paOctokit.rest.actions.createWorkflowDispatch({
