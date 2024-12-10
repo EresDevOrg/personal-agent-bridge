@@ -39,11 +39,11 @@ export async function callPersonalAgent(context: Context) {
       throw new Error(`No personal agent config found on ${personalAgentOwner}/personal-agent`);
     }
 
-    if (!process.env.PA_BRIDGE_X25519_PRIVATE_KEY) {
+    if (!context.env.PA_BRIDGE_X25519_PRIVATE_KEY) {
       throw new Error(`Missing PA_BRIDGE_X25519_PRIVATE_KEY in bridge repository secrets.`);
     }
 
-    const patDecrypted = await decryptKeys(personalAgentConfig.config.GITHUB_PAT_ENCRYPTED, process.env.PA_BRIDGE_X25519_PRIVATE_KEY, logger);
+    const patDecrypted = await decryptKeys(personalAgentConfig.config.GITHUB_PAT_ENCRYPTED, context.env.PA_BRIDGE_X25519_PRIVATE_KEY, logger);
 
     const paOctokit = new Octokit({
       auth: patDecrypted.decryptedText,
@@ -69,6 +69,6 @@ export async function callPersonalAgent(context: Context) {
     throw error;
   }
 
-  logger.ok(`Successfully sent the command to personal agent of @${personalAgentOwner}!`);
+  logger.ok(`Successfully sent the command to ${personalAgentOwner}/personal-agent`);
   logger.verbose(`Exiting callPersonalAgent`);
 }
