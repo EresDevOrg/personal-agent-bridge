@@ -17,6 +17,10 @@ jest.requireActual("@octokit/rest");
 const octokit = new Octokit();
 const commentCreateEvent = "issue_comment.created";
 
+const env: Env = {
+  PA_BRIDGE_X25519_PRIVATE_KEY: "lkQCx6wMxB7V8oXVxWDdEY2xqAF5VqJx7dLIK4qMyIw",
+};
+
 beforeAll(() => {
   server.listen();
 });
@@ -34,37 +38,29 @@ describe("Plugin tests", () => {
 
   it("Should serve the manifest file", async () => {
     const worker = (await import("../src/worker")).default;
-    const response = await worker.fetch(new Request("http://localhost/manifest"), {});
+    const response = await worker.fetch(new Request("http://localhost/manifest"), env);
     const content = await response.json();
     expect(content).toEqual(manifest);
   });
 
   it("Should handle personal agent command", async () => {
-    const { context, errorSpy, debugSpy, infoSpy } = createContext();
+    const { context, errorSpy, okSpy, infoSpy, verboseSpy } = createContext();
 
     expect(context.eventName).toBe(commentCreateEvent);
 
     await runPlugin(context);
 
     expect(errorSpy).not.toHaveBeenCalled();
-    //TODO
-    expect(infoSpy).toHaveBeenNthCalledWith(
-      1,
-      `Comment received: ${JSON.stringify({
-        username: "EresDev",
-        comment: "/@EresDev Fork this repository.",
-      })}`
-    );
-    expect(debugSpy).toHaveBeenNthCalledWith(1, STRINGS.EXECUTING_HELLO_WORLD, {
+
+    expect(infoSpy).toHaveBeenNthCalledWith(1, `Comment received:`, {
       caller: STRINGS.CALLER_LOGS_ANON,
-      sender: STRINGS.USER_1,
-      repo: STRINGS.TEST_REPO,
-      issueNumber: 1,
-      owner: STRINGS.USER_1,
+      personalAgentOwner: "web4er",
+      owner: "ubiquity",
+      comment: "/@web4er Fork this repository.",
     });
-    //expect(infoSpy).toHaveBeenNthCalledWith(1, STRINGS.HELLO_WORLD);
-    // expect(okSpy).toHaveBeenNthCalledWith(1, STRINGS.SUCCESSFULLY_CREATED_COMMENT);
-    // expect(verboseSpy).toHaveBeenNthCalledWith(1, STRINGS.EXITING_HELLO_WORLD);
+
+    expect(okSpy).toHaveBeenNthCalledWith(1, "Successfully sent the command to web4er/personal-agent");
+    expect(verboseSpy).toHaveBeenNthCalledWith(1, "Exiting callPersonalAgent");
   });
 
   it("Should ignore irrelevant comments", async () => {
@@ -77,10 +73,6 @@ describe("Plugin tests", () => {
 
     expect(errorSpy).not.toHaveBeenCalled();
     expect(infoSpy).toHaveBeenNthCalledWith(1, "Ignoring irrelevant comment: foo bar");
-
-    //expect(infoSpy).toHaveBeenNthCalledWith(1, STRINGS.HELLO_WORLD);
-    // expect(okSpy).toHaveBeenNthCalledWith(1, STRINGS.SUCCESSFULLY_CREATED_COMMENT);
-    // expect(verboseSpy).toHaveBeenNthCalledWith(1, STRINGS.EXITING_HELLO_WORLD);
   });
 
   // it("Should respond with `Hello, World!` in response to /Hello", async () => {
@@ -119,7 +111,7 @@ describe("Plugin tests", () => {
  */
 function createContext(
   configurableResponse: string = "Hello, world!", // we pass the plugin configurable items here
-  commentBody: string = "/@EresDev Fork this repository.",
+  commentBody: string = "/@web4er Fork this repository.",
   repoId: number = 1,
   payloadSenderId: number = 1,
   commentId: number = 1,
@@ -178,7 +170,7 @@ function createContextInner(
     config: {
       configurableResponse,
     },
-    env: {} as Env,
+    env,
     octokit: octokit,
   };
 }
