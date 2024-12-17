@@ -2,6 +2,7 @@
  * Strings repeated more than twice are stored here.
  */
 export const STRINGS = {
+  commentBody: "/@web4er Fork this repository.",
   HELLO_WORLD: "Hello, world!",
   TEST_REPO: "test-repo",
   SUCCESSFULLY_CREATED_COMMENT: "Successfully created comment!",
