@@ -44,7 +44,7 @@ describe("Plugin tests", () => {
   });
 
   it("Should handle personal agent command", async () => {
-    const { context, errorSpy, okSpy, infoSpy, verboseSpy } = createContext();
+    const { context, errorSpy, okSpy, infoSpy, verboseSpy } = createContext(env);
 
     expect(context.eventName).toBe(commentCreateEvent);
 
@@ -56,7 +56,7 @@ describe("Plugin tests", () => {
       caller: STRINGS.CALLER_LOGS_ANON,
       personalAgentOwner: "web4er",
       owner: "ubiquity",
-      comment: "/@web4er Fork this repository.",
+      comment: STRINGS.commentBody,
     });
 
     expect(okSpy).toHaveBeenNthCalledWith(1, "Successfully sent the command to web4er/personal-agent");
@@ -64,7 +64,7 @@ describe("Plugin tests", () => {
   });
 
   it("Should ignore irrelevant comments", async () => {
-    const { context, errorSpy, infoSpy } = createContext("", "foo bar");
+    const { context, errorSpy, infoSpy } = createContext(env, "", "foo bar");
 
     expect(context.eventName).toBe(commentCreateEvent);
     expect(context.payload.comment.body).toBe("foo bar");
@@ -73,6 +73,25 @@ describe("Plugin tests", () => {
 
     expect(errorSpy).not.toHaveBeenCalled();
     expect(infoSpy).toHaveBeenNthCalledWith(1, "Ignoring irrelevant comment: foo bar");
+  });
+
+  it("Should fail on wrong PA_BRIDGE_X25519_PRIVATE_KEY", async () => {
+    const { context, errorSpy, infoSpy } = createContext({ PA_BRIDGE_X25519_PRIVATE_KEY: "" });
+
+    expect(context.eventName).toBe(commentCreateEvent);
+
+    await expect(async () => {
+      await runPlugin(context);
+    }).rejects.toThrowError();
+
+    expect(infoSpy).toHaveBeenNthCalledWith(1, `Comment received:`, {
+      caller: STRINGS.CALLER_LOGS_ANON,
+      personalAgentOwner: "web4er",
+      owner: "ubiquity",
+      comment: STRINGS.commentBody,
+    });
+
+    expect(errorSpy).toHaveBeenNthCalledWith(1, `Error dispatching workflow: Error: Missing PA_BRIDGE_X25519_PRIVATE_KEY in bridge repository secrets.`);
   });
 
   // it("Should respond with `Hello, World!` in response to /Hello", async () => {
@@ -110,8 +129,9 @@ describe("Plugin tests", () => {
  * Refactor according to your needs.
  */
 function createContext(
+  env: Env,
   configurableResponse: string = "Hello, world!", // we pass the plugin configurable items here
-  commentBody: string = "/@web4er Fork this repository.",
+  commentBody: string = STRINGS.commentBody,
   repoId: number = 1,
   payloadSenderId: number = 1,
   commentId: number = 1,
@@ -124,7 +144,7 @@ function createContext(
   createComment(commentBody, commentId); // create it first then pull it from the DB and feed it to _createContext
   const comment = db.issueComments.findFirst({ where: { id: { equals: commentId } } }) as unknown as Context["payload"]["comment"];
 
-  const context = createContextInner(repo, sender, issue1, comment, configurableResponse);
+  const context = createContextInner(repo, sender, issue1, comment, env, configurableResponse);
   const infoSpy = jest.spyOn(context.logger, "info");
   const errorSpy = jest.spyOn(context.logger, "error");
   const debugSpy = jest.spyOn(context.logger, "debug");
@@ -153,6 +173,7 @@ function createContextInner(
   sender: Context["payload"]["sender"],
   issue: Context["payload"]["issue"],
   comment: Context["payload"]["comment"],
+  env: Env,
   configurableResponse: string
 ): Context {
   return {
