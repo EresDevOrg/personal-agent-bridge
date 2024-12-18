@@ -25,7 +25,7 @@ jobs:
     permissions: write-all
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      PA_BRIDGE_X25519_PRIVATE_KEY: ${{ secrets.PA_BRIDGE_X25519_PRIVATE_KEY }}
+      X25519_PRIVATE_KEY: ${{ secrets.X25519_PRIVATE_KEY }}
 
     steps:
       - uses: actions/checkout@v4

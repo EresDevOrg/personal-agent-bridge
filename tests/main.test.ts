@@ -18,7 +18,7 @@ const octokit = new Octokit();
 const commentCreateEvent = "issue_comment.created";
 
 const env: Env = {
-  PA_BRIDGE_X25519_PRIVATE_KEY: "lkQCx6wMxB7V8oXVxWDdEY2xqAF5VqJx7dLIK4qMyIw",
+  X25519_PRIVATE_KEY: "lkQCx6wMxB7V8oXVxWDdEY2xqAF5VqJx7dLIK4qMyIw",
 };
 
 beforeAll(() => {
@@ -75,8 +75,8 @@ describe("Plugin tests", () => {
     expect(infoSpy).toHaveBeenNthCalledWith(1, "Ignoring irrelevant comment: foo bar");
   });
 
-  it("Should fail on wrong PA_BRIDGE_X25519_PRIVATE_KEY", async () => {
-    const { context, errorSpy, infoSpy } = createContext({ PA_BRIDGE_X25519_PRIVATE_KEY: "" });
+  it("Should fail on wrong X25519_PRIVATE_KEY", async () => {
+    const { context, errorSpy, infoSpy } = createContext({ X25519_PRIVATE_KEY: "" });
 
     expect(context.eventName).toBe(commentCreateEvent);
 
@@ -91,7 +91,7 @@ describe("Plugin tests", () => {
       comment: STRINGS.commentBody,
     });
 
-    expect(errorSpy).toHaveBeenNthCalledWith(1, `Error dispatching workflow: Error: Missing PA_BRIDGE_X25519_PRIVATE_KEY in bridge repository secrets.`);
+    expect(errorSpy).toHaveBeenNthCalledWith(1, `Error dispatching workflow: Error: Missing X25519_PRIVATE_KEY in bridge repository secrets.`);
   });
 
   // it("Should respond with `Hello, World!` in response to /Hello", async () => {
