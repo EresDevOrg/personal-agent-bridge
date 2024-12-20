@@ -12,14 +12,10 @@ import { Logs } from "@ubiquity-dao/ubiquibot-logger";
 import { Env } from "../src/types";
 import { runPlugin } from "../src/plugin";
 
-dotenv.config();
+dotenv.config({ path: "tests/.env.test" });
 jest.requireActual("@octokit/rest");
 const octokit = new Octokit();
 const commentCreateEvent = "issue_comment.created";
-
-const env: Env = {
-  X25519_PRIVATE_KEY: "lkQCx6wMxB7V8oXVxWDdEY2xqAF5VqJx7dLIK4qMyIw",
-};
 
 beforeAll(() => {
   server.listen();
@@ -38,13 +34,13 @@ describe("Plugin tests", () => {
 
   it("Should serve the manifest file", async () => {
     const worker = (await import("../src/worker")).default;
-    const response = await worker.fetch(new Request("http://localhost/manifest"), env);
+    const response = await worker.fetch(new Request("http://localhost/manifest"), {} as Env);
     const content = await response.json();
     expect(content).toEqual(manifest);
   });
 
   it("Should handle personal agent command", async () => {
-    const { context, errorSpy, okSpy, infoSpy, verboseSpy } = createContext(env);
+    const { context, errorSpy, okSpy, infoSpy, verboseSpy } = createContext();
 
     expect(context.eventName).toBe(commentCreateEvent);
 
@@ -64,7 +60,7 @@ describe("Plugin tests", () => {
   });
 
   it("Should ignore irrelevant comments", async () => {
-    const { context, errorSpy, infoSpy } = createContext(env, "", "foo bar");
+    const { context, errorSpy, infoSpy } = createContext("", "foo bar");
 
     expect(context.eventName).toBe(commentCreateEvent);
     expect(context.payload.comment.body).toBe("foo bar");
@@ -76,7 +72,8 @@ describe("Plugin tests", () => {
   });
 
   it("Should fail on wrong X25519_PRIVATE_KEY", async () => {
-    const { context, errorSpy, infoSpy } = createContext({ X25519_PRIVATE_KEY: "" });
+    process.env.X25519_PRIVATE_KEY = "roWTTjNnyKI4VBHQ3JlLUR7bZpxGcHNYCqK4GgLcslA";
+    const { context, errorSpy, infoSpy } = createContext();
 
     expect(context.eventName).toBe(commentCreateEvent);
 
@@ -91,7 +88,7 @@ describe("Plugin tests", () => {
       comment: STRINGS.commentBody,
     });
 
-    expect(errorSpy).toHaveBeenNthCalledWith(1, `Error dispatching workflow: Error: Missing X25519_PRIVATE_KEY in bridge repository secrets.`);
+    expect(errorSpy).toHaveBeenNthCalledWith(1, `Error dispatching workflow: Error: incorrect key pair for the given ciphertext`);
   });
 
   // it("Should respond with `Hello, World!` in response to /Hello", async () => {
@@ -129,7 +126,6 @@ describe("Plugin tests", () => {
  * Refactor according to your needs.
  */
 function createContext(
-  env: Env,
   configurableResponse: string = "Hello, world!", // we pass the plugin configurable items here
   commentBody: string = STRINGS.commentBody,
   repoId: number = 1,
@@ -144,7 +140,7 @@ function createContext(
   createComment(commentBody, commentId); // create it first then pull it from the DB and feed it to _createContext
   const comment = db.issueComments.findFirst({ where: { id: { equals: commentId } } }) as unknown as Context["payload"]["comment"];
 
-  const context = createContextInner(repo, sender, issue1, comment, env, configurableResponse);
+  const context = createContextInner(repo, sender, issue1, comment, configurableResponse);
   const infoSpy = jest.spyOn(context.logger, "info");
   const errorSpy = jest.spyOn(context.logger, "error");
   const debugSpy = jest.spyOn(context.logger, "debug");
@@ -173,7 +169,6 @@ function createContextInner(
   sender: Context["payload"]["sender"],
   issue: Context["payload"]["issue"],
   comment: Context["payload"]["comment"],
-  env: Env,
   configurableResponse: string
 ): Context {
   return {
@@ -191,7 +186,7 @@ function createContextInner(
     config: {
       configurableResponse,
     },
-    env,
+    env: {} as Env,
     octokit: octokit,
   };
 }
