@@ -29,7 +29,10 @@ export async function run() {
 
   await plugin(inputs, env);
 
-  return returnDataToKernel(inputs.authToken, inputs.stateId, {});
+  return returnDataToKernel(inputs.authToken, inputs.stateId, {
+    result: "info",
+    message: "Personal agent command has been processed. Refer to personal-agent-bridge and personal-agent workflows for status.",
+  });
 }
 
 async function returnDataToKernel(repoToken: string, stateId: string, output: object) {
