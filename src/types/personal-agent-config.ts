@@ -1,4 +1,4 @@
-import { StaticDecode, Type as T } from "@sinclair/typebox";
+import { Type as T } from "@sinclair/typebox";
 import { StandardValidator } from "typebox-validators";
 
 export const personalAgentConfigSchema = T.Object(
@@ -9,5 +9,3 @@ export const personalAgentConfigSchema = T.Object(
 );
 
 export const configSchemaValidator = new StandardValidator(personalAgentConfigSchema);
-
-export type PluginSettings = StaticDecode<typeof personalAgentConfigSchema>;
