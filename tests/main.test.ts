@@ -26,7 +26,7 @@ afterEach(() => {
 });
 afterAll(() => server.close());
 
-describe("Plugin tests", () => {
+describe("Personal Agent Bridge Plugin tests", () => {
   beforeEach(async () => {
     drop(db);
     await setupTests();
@@ -47,15 +47,13 @@ describe("Plugin tests", () => {
     await runPlugin(context);
 
     expect(errorSpy).not.toHaveBeenCalled();
-
     expect(infoSpy).toHaveBeenNthCalledWith(1, `Comment received:`, {
       caller: STRINGS.CALLER_LOGS_ANON,
-      personalAgentOwner: "web4er",
-      owner: "ubiquity",
+      personalAgentOwner: STRINGS.personalAgentOwner,
+      owner: STRINGS.USER,
       comment: STRINGS.commentBody,
     });
-
-    expect(okSpy).toHaveBeenNthCalledWith(1, "Successfully sent the command to web4er/personal-agent");
+    expect(okSpy).toHaveBeenNthCalledWith(1, `Successfully sent the command to ${STRINGS.personalAgentOwner}/personal-agent`);
     expect(verboseSpy).toHaveBeenNthCalledWith(1, "Exiting callPersonalAgent");
   });
 
@@ -83,38 +81,13 @@ describe("Plugin tests", () => {
 
     expect(infoSpy).toHaveBeenNthCalledWith(1, `Comment received:`, {
       caller: STRINGS.CALLER_LOGS_ANON,
-      personalAgentOwner: "web4er",
-      owner: "ubiquity",
+      personalAgentOwner: STRINGS.personalAgentOwner,
+      owner: STRINGS.USER,
       comment: STRINGS.commentBody,
     });
 
     expect(errorSpy).toHaveBeenNthCalledWith(1, `Error dispatching workflow: Error: incorrect key pair for the given ciphertext`);
   });
-
-  // it("Should respond with `Hello, World!` in response to /Hello", async () => {
-  //   const { context } = createContext();
-  //   await runPlugin(context);
-  //   const comments = db.issueComments.getAll();
-  //   expect(comments.length).toBe(2);
-  //   expect(comments[1].body).toBe(STRINGS.HELLO_WORLD);
-  // });
-
-  // it("Should respond with `Hello, Code Reviewers` in response to /Hello", async () => {
-  //   const { context } = createContext(STRINGS.CONFIGURABLE_RESPONSE);
-  //   await runPlugin(context);
-  //   const comments = db.issueComments.getAll();
-  //   expect(comments.length).toBe(2);
-  //   expect(comments[1].body).toBe(STRINGS.CONFIGURABLE_RESPONSE);
-  // });
-
-  // it("Should not respond to a comment that doesn't contain /Hello", async () => {
-  //   const { context, errorSpy } = createContext(STRINGS.CONFIGURABLE_RESPONSE, STRINGS.INVALID_COMMAND);
-  //   await runPlugin(context);
-  //   const comments = db.issueComments.getAll();
-
-  //   expect(comments.length).toBe(1);
-  //   expect(errorSpy).toHaveBeenNthCalledWith(1, STRINGS.INVALID_USE_OF_SLASH_COMMAND, { caller: STRINGS.CALLER_LOGS_ANON, body: STRINGS.INVALID_COMMAND });
-  // });
 });
 
 /**
@@ -180,7 +153,7 @@ function createContextInner(
       issue: issue,
       comment: comment,
       installation: { id: 1 } as Context["payload"]["installation"],
-      organization: { login: STRINGS.USER_1 } as Context["payload"]["organization"],
+      organization: { login: STRINGS.USER } as Context["payload"]["organization"],
     } as Context["payload"],
     logger: new Logs("debug"),
     config: {
