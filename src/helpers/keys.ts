@@ -1,3 +1,4 @@
+// cSpell:ignore libsodium, URLSAFE, scalarmult
 import sodium from "libsodium-wrappers";
 import { Logs } from "@ubiquity-dao/ubiquibot-logger";
 
