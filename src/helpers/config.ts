@@ -3,7 +3,7 @@ import YAML, { YAMLError } from "yaml";
 import { Context } from "../types";
 import { personalAgentConfigSchema, configSchemaValidator } from "../types/personal-agent-config";
 
-export const CONFIG_FULL_PATH = ".github/.personal-agent.config.yml";
+export const CONFIG_FULL_PATH = ".github/personal-agent.config.yml";
 export const REPOSITORY_NAME = "personal-agent";
 
 export async function getPersonalAgentConfig(context: Context, owner: string) {
@@ -38,7 +38,7 @@ async function download({ context, repository, owner }: { context: Context; repo
     const { data } = await context.octokit.rest.repos.getContent({
       owner,
       repo: repository,
-      path: ".github/personal-agent.config.yml",
+      path: CONFIG_FULL_PATH,
       mediaType: { format: "raw" },
     });
     return data as unknown as string; // this will be a string if media format is raw
