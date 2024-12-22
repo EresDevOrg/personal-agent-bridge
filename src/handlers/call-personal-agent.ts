@@ -1,7 +1,7 @@
 import { Octokit } from "@octokit/rest";
-import { Context } from "../types";
 import { getPersonalAgentConfig } from "../helpers/config";
 import { decryptKeys } from "../helpers/keys";
+import { Context } from "../types";
 
 /**
  * NOTICE: run the personal-agent repository workflow of mentioned user
@@ -11,7 +11,7 @@ import { decryptKeys } from "../helpers/keys";
  * /@exampleGithubUser fork ubiquity-os/plugin-template
  *
  */
-export async function callPersonalAgent(context: Context) {
+export async function callPersonalAgent(context: Context, authToken: string) {
   const { logger, payload } = context;
 
   const owner = payload.repository.owner.login;
@@ -54,6 +54,13 @@ export async function callPersonalAgent(context: Context) {
       repo: "personal-agent",
       workflow_id: "compute.yml",
       ref: "development",
+      inputs: {
+        owner: owner,
+        repo: repo,
+        issue_number: payload.issue.number,
+        body: payload.comment.body,
+        authToken: authToken,
+      },
     });
   } catch (error) {
     logger.error(`Error dispatching workflow: ${error}`);

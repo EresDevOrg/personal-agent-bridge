@@ -1,19 +1,18 @@
 import { Octokit } from "@octokit/rest";
-import { returnDataToKernel } from "./helpers/validator";
-import { Env, PluginInputs } from "./types";
-import { Context } from "./types";
-import { isIssueCommentEvent } from "./types/typeguards";
-import { callPersonalAgent } from "./handlers/call-personal-agent";
 import { LogLevel, Logs } from "@ubiquity-dao/ubiquibot-logger";
+import { callPersonalAgent } from "./handlers/call-personal-agent";
+import { returnDataToKernel } from "./helpers/validator";
+import { Context, Env, PluginInputs } from "./types";
+import { isIssueCommentEvent } from "./types/typeguards";
 
 /**
  * The main plugin function. Split for easier testing.
  */
-export async function runPlugin(context: Context) {
+export async function runPlugin(context: Context, authToken: string) {
   const { logger, eventName } = context;
 
   if (isIssueCommentEvent(context)) {
-    return await callPersonalAgent(context);
+    return await callPersonalAgent(context, authToken);
   }
 
   logger.error(`Unsupported event: ${eventName}`);
@@ -45,6 +44,6 @@ export async function plugin(inputs: PluginInputs, env: Env) {
    * context.adapters = createAdapters(supabase, context);
    */
 
-  await runPlugin(context);
+  await runPlugin(context, inputs.authToken);
   return returnDataToKernel(process.env.GITHUB_TOKEN, inputs.stateId, {});
 }
