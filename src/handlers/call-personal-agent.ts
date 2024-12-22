@@ -11,7 +11,7 @@ import { decryptKeys } from "../helpers/keys";
  * /@exampleGithubUser fork ubiquity-os/plugin-template
  *
  */
-export async function callPersonalAgent(context: Context) {
+export async function callPersonalAgent(context: Context, inputs: PluginInputs) {
   const { logger, payload } = context;
 
   const owner = payload.repository.owner.login;
@@ -54,6 +54,7 @@ export async function callPersonalAgent(context: Context) {
       repo: "personal-agent",
       workflow_id: "compute.yml",
       ref: "development",
+      inputs: inputs as unknown as { [key: string]: unknown },
     });
   } catch (error) {
     logger.error(`Error dispatching workflow: ${error}`);
