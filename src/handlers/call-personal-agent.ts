@@ -56,7 +56,7 @@ export async function callPersonalAgent(context: Context, inputs: PluginInputs) 
       repo: "personal-agent",
       workflow_id: "compute.yml",
       ref: "development",
-      inputs: { ...inputs, eventPayload: {}, settings: {}, initialEventPayload: JSON.stringify(inputs.eventPayload) } as unknown as { [key: string]: unknown },
+      inputs: { ...inputs, settings: {}, eventPayload: JSON.stringify(inputs.eventPayload) } as unknown as { [key: string]: unknown },
     });
   } catch (error) {
     logger.error(`Error dispatching workflow: ${error}`);
