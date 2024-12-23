@@ -49,6 +49,8 @@ export async function callPersonalAgent(context: Context, inputs: PluginInputs) 
       auth: patDecrypted.decryptedText,
     });
 
+    console.log("eventPayload", JSON.stringify(inputs.eventPayload));
+
     await paOctokit.rest.actions.createWorkflowDispatch({
       owner: personalAgentOwner,
       repo: "personal-agent",
