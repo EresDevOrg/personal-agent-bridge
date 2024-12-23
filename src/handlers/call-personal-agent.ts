@@ -57,7 +57,7 @@ export async function callPersonalAgent(context: Context, authToken: string) {
       inputs: {
         owner: owner,
         repo: repo,
-        issue_number: payload.issue.number,
+        issue_number: payload.issue.number.toString(),
         body: payload.comment.body,
         authToken: authToken,
       },
