@@ -32,6 +32,15 @@ export async function callPersonalAgent(context: Context, inputs: PluginInputs) 
   const personalAgentOwner = targetUser[0].replace("/@", "");
   logger.info(`Comment received:`, { owner, personalAgentOwner, comment: body });
 
+  console.log("inputs started");
+  console.log(
+    JSON.stringify({
+      ...inputs,
+      settings: JSON.stringify(inputs.settings),
+      eventPayload: JSON.stringify(inputs.eventPayload),
+    })
+  );
+  console.log("inputs ended");
   try {
     const personalAgentConfig = await getPersonalAgentConfig(context, personalAgentOwner);
 
