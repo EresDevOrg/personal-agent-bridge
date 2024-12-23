@@ -1,5 +1,5 @@
 import { Octokit } from "@octokit/rest";
-import { Context } from "../types";
+import { Context, PluginInputs } from "../types";
 import { getPersonalAgentConfig } from "../helpers/config";
 import { decryptKeys } from "../helpers/keys";
 
@@ -56,7 +56,11 @@ export async function callPersonalAgent(context: Context, inputs: PluginInputs) 
       repo: "personal-agent",
       workflow_id: "compute.yml",
       ref: "development",
-      inputs: { ...inputs, settings: {}, eventPayload: JSON.stringify(inputs.eventPayload) } as unknown as { [key: string]: unknown },
+      inputs: {
+        ...inputs,
+        settings: JSON.stringify(inputs.settings),
+        eventPayload: JSON.stringify(inputs.eventPayload),
+      },
     });
   } catch (error) {
     logger.error(`Error dispatching workflow: ${error}`);
