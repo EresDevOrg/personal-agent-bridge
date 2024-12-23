@@ -1,16 +1,16 @@
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "@jest/globals";
 import { drop } from "@mswjs/data";
-import { db } from "./__mocks__/db";
-import { server } from "./__mocks__/node";
-import { expect, describe, beforeAll, beforeEach, afterAll, afterEach, it } from "@jest/globals";
-import { Context } from "../src/types/context";
 import { Octokit } from "@octokit/rest";
-import { STRINGS } from "./__mocks__/strings";
-import { createComment, setupTests } from "./__mocks__/helpers";
-import manifest from "../manifest.json";
-import dotenv from "dotenv";
 import { Logs } from "@ubiquity-dao/ubiquibot-logger";
-import { Env } from "../src/types";
+import dotenv from "dotenv";
+import manifest from "../manifest.json";
 import { runPlugin } from "../src/plugin";
+import { Env } from "../src/types";
+import { Context } from "../src/types/context";
+import { db } from "./__mocks__/db";
+import { createComment, setupTests } from "./__mocks__/helpers";
+import { server } from "./__mocks__/node";
+import { STRINGS } from "./__mocks__/strings";
 
 dotenv.config({ path: "tests/.env.test" });
 jest.requireActual("@octokit/rest");
@@ -44,7 +44,7 @@ describe("Personal Agent Bridge Plugin tests", () => {
 
     expect(context.eventName).toBe(commentCreateEvent);
 
-    await runPlugin(context);
+    await runPlugin(context, "foobar");
 
     expect(errorSpy).not.toHaveBeenCalled();
     expect(infoSpy).toHaveBeenNthCalledWith(1, `Comment received:`, {
@@ -63,7 +63,7 @@ describe("Personal Agent Bridge Plugin tests", () => {
     expect(context.eventName).toBe(commentCreateEvent);
     expect(context.payload.comment.body).toBe("foo bar");
 
-    await runPlugin(context);
+    await runPlugin(context, "foobar");
 
     expect(errorSpy).not.toHaveBeenCalled();
     expect(infoSpy).toHaveBeenNthCalledWith(1, "Ignoring irrelevant comment: foo bar");
@@ -76,7 +76,7 @@ describe("Personal Agent Bridge Plugin tests", () => {
     expect(context.eventName).toBe(commentCreateEvent);
 
     await expect(async () => {
-      await runPlugin(context);
+      await runPlugin(context, "foobar");
     }).rejects.toThrowError();
 
     expect(infoSpy).toHaveBeenNthCalledWith(1, `Comment received:`, {
