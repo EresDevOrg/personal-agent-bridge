@@ -2,8 +2,8 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 import { Octokit } from "@octokit/rest";
 import { Value } from "@sinclair/typebox/value";
-import { envSchema, pluginSettingsSchema, PluginInputs, pluginSettingsValidator } from "./types";
 import { plugin } from "./plugin";
+import { envSchema, PluginInputs, pluginSettingsSchema, pluginSettingsValidator } from "./types";
 
 /**
  * How a GitHub action executes the plugin.
