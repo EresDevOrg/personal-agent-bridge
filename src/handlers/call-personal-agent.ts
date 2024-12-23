@@ -1,7 +1,7 @@
 import { Octokit } from "@octokit/rest";
 import { getPersonalAgentConfig } from "../helpers/config";
 import { decryptKeys } from "../helpers/keys";
-import { Context } from "../types";
+import { Context, PluginInputs } from "../types";
 
 /**
  * NOTICE: run the personal-agent repository workflow of mentioned user
@@ -11,7 +11,7 @@ import { Context } from "../types";
  * /@exampleGithubUser fork ubiquity-os/plugin-template
  *
  */
-export async function callPersonalAgent(context: Context, authToken: string) {
+export async function callPersonalAgent(context: Context, inputs: PluginInputs) {
   const { logger, payload } = context;
 
   const owner = payload.repository.owner.login;
@@ -32,6 +32,15 @@ export async function callPersonalAgent(context: Context, authToken: string) {
   const personalAgentOwner = targetUser[0].replace("/@", "");
   logger.info(`Comment received:`, { owner, personalAgentOwner, comment: body });
 
+  console.log("inputs started");
+  console.log(
+    JSON.stringify({
+      ...inputs,
+      settings: JSON.stringify(inputs.settings),
+      eventPayload: JSON.stringify(inputs.eventPayload),
+    })
+  );
+  console.log("inputs ended");
   try {
     const personalAgentConfig = await getPersonalAgentConfig(context, personalAgentOwner);
 
@@ -55,17 +64,15 @@ export async function callPersonalAgent(context: Context, authToken: string) {
       workflow_id: "compute.yml",
       ref: "development",
       inputs: {
-        owner: owner,
-        repo: repo,
-        issue_number: payload.issue.number,
-        body: payload.comment.body,
-        authToken: authToken,
+        ...inputs,
+        settings: JSON.stringify(inputs.settings),
+        eventPayload: JSON.stringify(inputs.eventPayload),
       },
     });
   } catch (error) {
     logger.error(`Error dispatching workflow: ${error}`);
 
-    const errComment = ["```diff", `! There was a problem in communicating with ${personalAgentOwner}/personal-agent`, "```"].join("\n");
+    const errComment = ["```diff", `! There was a problem in communication with ${personalAgentOwner}/personal-agent`, "```"].join("\n");
     await context.octokit.rest.issues.createComment({
       body: errComment,
       repo,

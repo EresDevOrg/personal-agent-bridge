@@ -8,11 +8,11 @@ import { isIssueCommentEvent } from "./types/typeguards";
 /**
  * The main plugin function. Split for easier testing.
  */
-export async function runPlugin(context: Context, authToken: string) {
+export async function runPlugin(context: Context, inputs: PluginInputs) {
   const { logger, eventName } = context;
 
   if (isIssueCommentEvent(context)) {
-    return await callPersonalAgent(context, authToken);
+    return await callPersonalAgent(context, inputs);
   }
 
   logger.error(`Unsupported event: ${eventName}`);
@@ -44,6 +44,6 @@ export async function plugin(inputs: PluginInputs, env: Env) {
    * context.adapters = createAdapters(supabase, context);
    */
 
-  await runPlugin(context, inputs.authToken);
+  await runPlugin(context, inputs);
   return returnDataToKernel(process.env.GITHUB_TOKEN, inputs.stateId, {});
 }
