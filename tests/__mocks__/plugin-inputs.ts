@@ -1,4 +1,5 @@
 /*eslint sonarjs/no-duplicate-string: "off"*/
+/* cspell:disable */
 import { PluginInputs } from "../../src/types";
 
 export const pluginInputs: PluginInputs = {
