@@ -1,6 +1,6 @@
 {
   "name": "Peronal Agent Bridge",
-  "description": "Direct personal commands in comments to respective user's personal agent plugin",
+  "description": "Forward personal commands in comments to respective user's personal agent plugin",
   "ubiquity:listeners": ["issue_comment.created"],
   "configuration": {
     "default": {
