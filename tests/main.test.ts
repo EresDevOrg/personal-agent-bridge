@@ -11,6 +11,7 @@ import { db } from "./__mocks__/db";
 import { createComment, setupTests } from "./__mocks__/helpers";
 import { server } from "./__mocks__/node";
 import { STRINGS } from "./__mocks__/strings";
+import { pluginInputs } from "./__mocks__/plugin-inputs";
 
 dotenv.config({ path: "tests/.env.test" });
 jest.requireActual("@octokit/rest");
@@ -44,7 +45,7 @@ describe("Personal Agent Bridge Plugin tests", () => {
 
     expect(context.eventName).toBe(commentCreateEvent);
 
-    await runPlugin(context, "foobar");
+    await runPlugin(context, pluginInputs);
 
     expect(errorSpy).not.toHaveBeenCalled();
     expect(infoSpy).toHaveBeenNthCalledWith(1, `Comment received:`, {
@@ -63,7 +64,7 @@ describe("Personal Agent Bridge Plugin tests", () => {
     expect(context.eventName).toBe(commentCreateEvent);
     expect(context.payload.comment.body).toBe("foo bar");
 
-    await runPlugin(context, "foobar");
+    await runPlugin(context, pluginInputs);
 
     expect(errorSpy).not.toHaveBeenCalled();
     expect(infoSpy).toHaveBeenNthCalledWith(1, "Ignoring irrelevant comment: foo bar");
@@ -76,7 +77,7 @@ describe("Personal Agent Bridge Plugin tests", () => {
     expect(context.eventName).toBe(commentCreateEvent);
 
     await expect(async () => {
-      await runPlugin(context, "foobar");
+      await runPlugin(context, pluginInputs);
     }).rejects.toThrowError();
 
     expect(infoSpy).toHaveBeenNthCalledWith(1, `Comment received:`, {
