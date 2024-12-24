@@ -1,17 +1,16 @@
 # `@ubiquity-os/personal-agent-bridge`
 
-Personal Agent Bridge is a [UbiquityOS](https://github.com/apps/ubiquity-os) plugin that facilitates communication between [UbiquityOS](https://github.com/apps/ubiquity-os) and a [Personal Agent plugin](https://github.com/EresDevOrg/personal-agent) hosted by a user's Github account. It picks up any comment that starts with `/@username` and forwards it to personal-agent of the mentioned user for further processing. What happens at the personal-agent is documented [here](https://github.com/EresDevOrg/personal-agent/blob/development/README.md).
+The Personal Agent Bridge is a [UbiquityOS](https://github.com/apps/ubiquity-os) plugin designed to enable seamless interaction between [UbiquityOS](https://github.com/apps/ubiquity-os) and a [Personal Agent plugin](https://github.com/EresDevOrg/personal-agent) hosted on a user's GitHub account. It detects any comment beginning with `/@username` and relays it to the mentioned user's personal-agent for further handling. Detailed documentation about the operations of the personal-agent can be found [here](https://github.com/EresDevOrg/personal-agent/blob/development/README.md).
 
 ## Usage
 
-The plugin only facilitates communication between UbiquityOS and Personal Agent. An issue comment given below should invoke this plugin.
+This plugin serves exclusively as a bridge between UbiquityOS and the Personal Agent. For example, the following issue comment triggers this plugin:
 
 ```
 /@username review my pull request
 ```
 
-where `username` belongs a GitHub user who has set up a fork of Personal Agent plugin.
-To see it in action, you should also deploy the [Personal Agent Plugin](https://github.com/EresDevOrg/personal-agent) and follow its usage instructions.
+Here, `username` must correspond to a GitHub user who has set up their own fork of the Personal Agent plugin. To see the system in action, you need to deploy the [Personal Agent plugin](https://github.com/EresDevOrg/personal-agent) and follow its setup and usage instructions.
 
 ## Plugin configuration
 
