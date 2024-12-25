@@ -156,7 +156,7 @@ function createContextInner(
     } as Context["payload"],
     logger: new Logs("debug"),
     config: {},
-    env: {} as Env,
+    env: process.env,
     octokit: octokit,
   };
 }

@@ -39,11 +39,11 @@ export async function callPersonalAgent(context: Context, inputs: PluginInputs) 
       throw new Error(`No personal agent config found on ${personalAgentOwner}/personal-agent`);
     }
 
-    if (!process.env.X25519_PRIVATE_KEY) {
+    if (!context.env.X25519_PRIVATE_KEY) {
       throw new Error(`Missing X25519_PRIVATE_KEY in bridge repository secrets.`);
     }
 
-    const patDecrypted = await decryptKeys(personalAgentConfig.config.GITHUB_PAT_ENCRYPTED, process.env.X25519_PRIVATE_KEY, logger);
+    const patDecrypted = await decryptKeys(personalAgentConfig.config.GITHUB_PAT_ENCRYPTED, context.env.X25519_PRIVATE_KEY, logger);
 
     const paOctokit = new Octokit({
       auth: patDecrypted.decryptedText,
