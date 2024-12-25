@@ -8,7 +8,7 @@ import { Context, PluginInputs } from "../types";
  *
  * Given below is the accepted format of comment to command the personal agent of @exampleGithubUser
  *
- * /@exampleGithubUser fork ubiquity-os/plugin-template
+ * /@exampleGithubUser say hello
  *
  */
 export async function callPersonalAgent(context: Context, inputs: PluginInputs) {
