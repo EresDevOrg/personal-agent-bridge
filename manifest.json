@@ -3,18 +3,9 @@
   "description": "Forward personal commands in comments to respective user's personal agent plugin",
   "ubiquity:listeners": ["issue_comment.created"],
   "configuration": {
-    "default": {
-      "configurableResponse": "Hello, world!"
-    },
+    "default": {},
     "type": "object",
-    "properties": {
-      "configurableResponse": {
-        "type": "string"
-      },
-      "customStringsUrl": {
-        "type": "string"
-      }
-    },
-    "required": ["configurableResponse"]
+    "properties": {},
+    "required": []
   }
 }
