@@ -21,6 +21,7 @@ plugins:
   - skipBotEvents: false
     uses:
       - plugin: ubiquity-os/personal-agent-bridge
+        with: {}
 ```
 
 ### Get started with development
