@@ -1,6 +1,6 @@
 # `@ubiquity-os/personal-agent-bridge`
 
-The Personal Agent Bridge is a [UbiquityOS](https://github.com/apps/ubiquity-os) plugin designed to enable seamless interaction between [UbiquityOS](https://github.com/apps/ubiquity-os) and a [Personal Agent plugin](https://github.com/EresDevOrg/personal-agent) hosted on a user's GitHub account. It detects any comment beginning with `/@username` and relays it to the mentioned user's personal-agent for further handling. Detailed documentation about the operations of the personal-agent can be found [here](https://github.com/EresDevOrg/personal-agent/blob/development/README.md).
+The Personal Agent Bridge is a [UbiquityOS](https://github.com/apps/ubiquity-os) plugin designed to enable seamless interaction between [UbiquityOS](https://github.com/apps/ubiquity-os) and a [Personal Agent](https://github.com/EresDevOrg/personal-agent) hosted on a user's GitHub account. It detects any comment beginning with `/@username` and relays it to the mentioned user's personal-agent for further handling. Detailed documentation about the operations of the personal-agent can be found [here](https://github.com/EresDevOrg/personal-agent/blob/development/README.md).
 
 ## Usage
 
