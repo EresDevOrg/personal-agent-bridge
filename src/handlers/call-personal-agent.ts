@@ -55,9 +55,11 @@ export async function callPersonalAgent(context: Context, inputs: PluginInputs) 
       workflow_id: "compute.yml",
       ref: "development",
       inputs: {
-        ...inputs,
-        settings: JSON.stringify(inputs.settings),
+        stateId: inputs.stateId,
+        eventName: inputs.eventName,
         eventPayload: JSON.stringify(inputs.eventPayload),
+        settings: JSON.stringify(inputs.settings),
+        ref: inputs.ref,
       },
     });
   } catch (error) {
