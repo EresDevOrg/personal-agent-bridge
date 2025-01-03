@@ -53,7 +53,7 @@ export async function callPersonalAgent(context: Context, inputs: PluginInputs) 
       owner: personalAgentOwner,
       repo: "personal-agent",
       workflow_id: "compute.yml",
-      ref: inputs.ref,
+      ref: "main",
       inputs: {
         stateId: inputs.stateId,
         eventName: inputs.eventName,
