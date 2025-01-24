@@ -10,7 +10,7 @@ import { StandardValidator } from "typebox-validators";
  * taken from either `dev.vars` or repository secrets.
  * They are used with `process.env` but are type-safe.
  */
-export const envSchema = T.Object({});
+export const envSchema = T.Object({ X25519_PRIVATE_KEY: T.String() });
 
 export const envValidator = new StandardValidator(envSchema);
 

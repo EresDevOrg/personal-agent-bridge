@@ -46,6 +46,17 @@ export const handlers = [
     db.issueComments.create(newItem);
     return HttpResponse.json(newItem);
   }),
+
+  http.get("https://api.github.com/repos/:owner/:repo/contents/.github%2Fpersonal-agent.config.yml", () => {
+    const content = `GITHUB_PAT_ENCRYPTED: "4p8Ze2HiVxqnmumJK1zg2VLnHnNsAlDu8axE7BlkqQH6f6otvsJZWAOI2TlFr0LHQihZQKwuTxyYZLmHSuM6incWqAV62za7q5PKR7sC1JIlRYX8gf5XqZfT2spsXoqPlaSo4iLxkef_qpS8SgG57H-7pgb6ihcANA-IA8_dza28jFEnVl79YxVIq9mU"`;
+    return HttpResponse.text(content);
+  }),
+
+  http.post("https://api.github.com/repos/:owner/:repo/actions/workflows/compute.yml/dispatches", () => {
+    return new HttpResponse(null, {
+      status: 204,
+    });
+  }),
 ];
 
 async function getValue(body: ReadableStream<Uint8Array> | null) {

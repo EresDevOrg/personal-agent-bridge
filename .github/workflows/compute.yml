@@ -1,4 +1,4 @@
-name: "the name of the plugin"
+name: "Personal Agent Bridge"
 
 on:
   workflow_dispatch:
@@ -17,15 +17,17 @@ on:
         description: "Ref"
       signature:
         description: "The kernel signature"
+      command:
+        description: "Command"
 
 jobs:
   compute:
-    name: "plugin name"
+    name: "Personal Agent Bridge"
     runs-on: ubuntu-latest
     permissions: write-all
     env:
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      X25519_PRIVATE_KEY: ${{ secrets.X25519_PRIVATE_KEY }}
 
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +42,4 @@ jobs:
 
       - name: execute directive
         run: npx tsx ./src/main.ts
-        id: plugin-name
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        id: plugin-personal-agent-bridge

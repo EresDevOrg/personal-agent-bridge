@@ -2,8 +2,8 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 import { Octokit } from "@octokit/rest";
 import { Value } from "@sinclair/typebox/value";
-import { envSchema, pluginSettingsSchema, PluginInputs, pluginSettingsValidator } from "./types";
 import { plugin } from "./plugin";
+import { envSchema, PluginInputs, pluginSettingsSchema, pluginSettingsValidator } from "./types";
 
 /**
  * How a GitHub action executes the plugin.
@@ -11,7 +11,7 @@ import { plugin } from "./plugin";
 export async function run() {
   const payload = github.context.payload.inputs;
 
-  const env = Value.Decode(envSchema, payload.env);
+  const env = Value.Decode(envSchema, process.env);
   const settings = Value.Decode(pluginSettingsSchema, Value.Default(pluginSettingsSchema, JSON.parse(payload.settings)));
 
   if (!pluginSettingsValidator.test(settings)) {
@@ -29,7 +29,10 @@ export async function run() {
 
   await plugin(inputs, env);
 
-  return returnDataToKernel(inputs.authToken, inputs.stateId, {});
+  return returnDataToKernel(inputs.authToken, inputs.stateId, {
+    result: "info",
+    message: "Personal agent command has been processed. Refer to personal-agent-bridge and personal-agent workflows for status.",
+  });
 }
 
 async function returnDataToKernel(repoToken: string, stateId: string, output: object) {
